@@ -13,18 +13,13 @@ import numpy as np
 from PIL import Image
 import os
 from utils import *
+from my_config import *
 
 
 class Gan:
-    def __init__(self):
-        self.learning_rate = 0.1
-        self.batch_size = 64
-        self.n_epoch = 20000
-        self.n_train_discriminator = 1
-        self.n_train_generator = 1
-
-        self.img_size = 28*28
-        self.random_size = 10*10
+    def __init__(self, dataset='MNIST'):
+        # load model's configure
+        self.load_config(MNIST_Config())
 
         # setup sample and check point path
         self.sample_dir = 'samples'
@@ -37,9 +32,20 @@ class Gan:
         self.init_param()
         self.build_gan()
 
-        self.test_random_input = self.get_random_input([self.batch_size, self.random_size])
+        self.test_random_input = self.get_random_input([self.batch_size, self.input_size])
 
         self.sess = tf.Session()
+
+    def load_config(self, config):
+        self.learning_rate = config.learning_rate
+        self.momentum = config.momentum
+        self.batch_size = config.batch_size
+        self.n_epoch = config.batch_size
+        self.n_train_discriminator = config.n_train_discriminator
+        self.n_train_generator = config.n_train_generator
+
+        self.img_size = config.image_size
+        self.input_size = config.input_size
 
     def binarize(self, img):
         # 随机噪声作为对抗样本
@@ -54,7 +60,7 @@ class Gan:
         return tf.Variable(tf.random_uniform(shape, minval=-0.1, maxval=0.1), name=name)
 
     def init_param(self):
-        g_n_input = self.random_size
+        g_n_input = self.input_size
         d_n_input = self.img_size
 
         self.g_input = tf.placeholder(tf.float32, [None, g_n_input], name='g_input')
@@ -116,6 +122,9 @@ class Gan:
         # return tf.reduce_mean(self.d_output_gene - self.d_output_real)
 
     def train(self, is_load=False, n_epoch=None):
+        self.train_mnist(is_load=is_load, n_epoch=n_epoch)
+
+    def train_mnist(self, is_load=False, n_epoch=None):
         if n_epoch is not None:
             self.n_epoch = n_epoch
 
@@ -124,7 +133,7 @@ class Gan:
         g_loss = self.g_loss()
         d_loss = self.d_loss()
 
-        optimizer = tf.train.MomentumOptimizer(learning_rate=self.learning_rate, momentum=0.5)
+        optimizer = tf.train.MomentumOptimizer(learning_rate=self.learning_rate, momentum=self.momentum)
         # optimizer = tf.train.RMSPropOptimizer(learning_rate=self.learning_rate)
 
         t_vars = tf.trainable_variables()
@@ -145,14 +154,14 @@ class Gan:
         g_l = 1
         for i in range(self.n_epoch):
             for j in range(self.n_train_discriminator):
-                true_batch = self.binarize(true_data.train.next_batch(self.batch_size)[0]) # [0]:images, [1]:labels
-                random_batch = self.get_random_input([self.batch_size, self.random_size])
+                true_batch = true_data.train.next_batch(self.batch_size)[0] # [0]:images, [1]:labels
+                random_batch = self.get_random_input([self.batch_size, self.input_size])
                 feed_dict = {self.g_input: random_batch,
                              self.d_input: true_batch}
                 _, d_l = self.sess.run([d_op, d_loss], feed_dict)
 
             for j in range(self.n_train_generator):
-                random_batch = self.get_random_input([self.batch_size, self.random_size])
+                random_batch = self.get_random_input([self.batch_size, self.input_size])
                 feed_dict = {self.g_input: random_batch}
                 _, g_l = self.sess.run([g_op, g_loss], feed_dict)
 
@@ -162,13 +171,6 @@ class Gan:
                 saver.save(self.sess, os.path.join(self.ckpt_path, 'gan.ckpt'), \
                            global_step=int(i/200))
                 print("check point saving...")
-                # feed_dict = {self.g_input: self.test_random_input}
-                # generate_img = self.sess.run(self.g_output, feed_dict=feed_dict)
-                # generate_img = generate_img.reshape((28, 28)) * 255
-                # img = Image.fromarray(generate_img.astype(np.uint8))
-                # img.save('train_g_image/'+str(int(i/100))+'.png')
-                #
-                # print("continue to train")
 
             if i % 2000 == 0:
                 self.generate_some_image(i)
@@ -183,5 +185,4 @@ class Gan:
         self.load_model()
         feed_dict = {self.g_input: self.test_random_input}
         generate_imgs = self.sess.run(self.g_output, feed_dict=feed_dict)
-        # generate_imgs = self.binarize(generate_imgs)
         save_samples(generate_imgs, self.sample_dir, cur_epoch, n_img)
