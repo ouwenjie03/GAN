@@ -25,12 +25,12 @@ def save_samples(np_imgs, img_path, cur_epoch, n_img=36):
     np_imgs = np_imgs.astype(np.uint8)
     H = W = int(np_imgs.shape[1] ** 0.5)
     num = int(n_img ** 0.5)
-    print num
+    print(num)
     sep = 3
     syn_img = np.ones((num * H + (num - 1) * sep, num * W + (num - 1) * sep)) * 255
     syn_img = syn_img.astype(np.uint8)
-    for i in xrange(num):
-        for j in xrange(num):
+    for i in range(num):
+        for j in range(num):
             syn_img[i*(H+sep):(i+1)*H+i*sep, j*(W+sep):(j+1)*W+j*sep] = \
                     np_imgs[i*num + j].reshape((28, 28))
 
