@@ -13,4 +13,3 @@ from model import *
 gan = Gan()
 
 gan.train()
-gan.generate_some_image()
