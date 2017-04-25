@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 """
-@author: ouwj
+@author: ouwj, donald
 @position: ouwj-win10
 @file: model.py
 @time: 2017/4/19 17:07
@@ -12,6 +12,7 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 import os
+from utils import *
 
 
 class Gan:
@@ -24,6 +25,14 @@ class Gan:
 
         self.img_size = 28*28
         self.random_size = 10*10
+
+        # setup sample and check point path
+        self.sample_dir = 'samples'
+        if not os.path.exists(self.sample_dir):
+            os.makedirs(self.sample_dir)
+        self.ckpt_path = 'check_point'
+        if not os.path.exists(self.ckpt_path):
+            os.makedirs(self.ckpt_path)
 
         self.init_param()
         self.build_gan()
@@ -150,32 +159,30 @@ class Gan:
             if i % 10 == 0:
                 print("%d | g_loss: %f | d_loss: %f" % (i, g_l, d_l))
             if i % 100 == 0:
-                saver.save(self.sess, 'check_point/gan.ckpt', global_step=int(i/200))
+                saver.save(self.sess, os.path.join(self.ckpt_path, 'gan.ckpt'), \
+                           global_step=int(i/200))
                 print("check point saving...")
                 feed_dict = {self.g_input: self.test_random_input}
                 generate_img = self.sess.run(self.g_output, feed_dict=feed_dict)
                 generate_img = generate_img.reshape((28, 28)) * 255
                 img = Image.fromarray(generate_img.astype(np.uint8))
-                img.save('train_g_image/'+str(int(i/100))+'.png')
+                #img.save('train_g_image/'+str(int(i/100))+'.png')
 
                 print("continue to train")
 
             if i % 2000 == 0:
-                os.mkdir('image'+str(i))
-                self.generate_some_image(dir_path='image'+str(i)+'/')
+                self.generate_some_image(i)
+                print("Iteration: %d, successfully saved samples" % i)
 
     def load_model(self, ckpt_dir='check_point'):
         saver = tf.train.Saver()
         ckpt = tf.train.latest_checkpoint(ckpt_dir)
         saver.restore(self.sess, ckpt)
 
-    def generate_some_image(self, n_img=32, dir_path='generative_image/'):
+    def generate_some_image(self, cur_epoch, n_img=36):
         self.load_model()
         random_input = self.get_random_input([self.batch_size, self.random_size])
         feed_dict = {self.g_input: random_input}
         generate_imgs = self.sess.run(self.g_output, feed_dict=feed_dict)
         generate_imgs = self.binarize(generate_imgs)
-        for i in range(n_img):
-            generate_img = generate_imgs[i].reshape((28, 28)) * 255
-            img = Image.fromarray(generate_img.astype(np.uint8))
-            img.save(dir_path + str(i) + '.png')
+        save_samples(generate_imgs, self.sample_dir, cur_epoch, n_img)

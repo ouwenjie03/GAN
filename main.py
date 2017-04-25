@@ -12,5 +12,5 @@ from model import *
 
 gan = Gan()
 
-gan.train(is_load=True)
+gan.train()
 gan.generate_some_image()
