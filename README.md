@@ -22,5 +22,5 @@ Iteration 18000
 
 ## To do
 
-[x] MNIST dataset experiment    
-[ ] TFD dataset experiment
+- [x] MNIST dataset experiment    
+- [ ] TFD dataset experiment
