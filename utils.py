@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 """
-@author: donald
+@author: donald, ouwj
 @position: donald-elementary
 @file: utils.py
 @time: 2017/4/25 11:16
@@ -64,7 +64,7 @@ def save_samples_cifar(np_imgs, img_path, cur_epoch, n_img):
     for i in range(num):
         for j in range(num):
             syn_img[i*(H+sep):(i+1)*H+i*sep, j*(W+sep):(j+1)*W+j*sep, 0:D] = \
-                    np_imgs[i*num + j].reshape((H, W, D))
+                    np.rollaxis(np_imgs[i*num + j].reshape((H, W, D)), 2)
 
     im = Image.fromarray(syn_img)
     im.save(join(img_path, "sample_img_%d.jpg" % cur_epoch))
