@@ -7,32 +7,37 @@
 @time: 2017/4/19 17:07
 """
 
-from tensorflow.examples.tutorials.mnist import input_data
 import tensorflow as tf
 import numpy as np
 from PIL import Image
 import os
 from utils import *
 from my_config import *
-
+from load_data import *
 
 class Gan:
     def __init__(self, dataset='MNIST'):
+        self.dataset = dataset
+
         # load model's configure
-        self.load_config(MNIST_Config())
+        self.load_config(get_config(dataset))
+
+        # load data
+        self.true_data = load_data(self.dataset)
 
         # setup sample and check point path
-        self.sample_dir = 'samples'
+        self.sample_dir = 'samples_'+dataset
         if not os.path.exists(self.sample_dir):
             os.makedirs(self.sample_dir)
-        self.ckpt_path = 'check_point'
+        self.ckpt_path = 'check_point_'+dataset
         if not os.path.exists(self.ckpt_path):
             os.makedirs(self.ckpt_path)
 
         self.init_param()
         self.build_gan()
 
-        self.test_random_input = self.get_random_input([self.batch_size, self.input_size])
+        self.n_img = 36
+        self.test_random_input = self.get_random_input([self.n_img, self.input_size])
 
         self.sess = tf.Session()
 
@@ -46,6 +51,11 @@ class Gan:
 
         self.img_size = config.image_size
         self.input_size = config.input_size
+
+        self.g_n_hidden1 = config.g_n_hidden1
+        self.g_n_hidden2 = config.g_n_hidden2
+        self.d_n_hidden1 = config.d_n_hidden1
+        self.d_n_hidden2 = config.d_n_hidden2
 
     def binarize(self, img):
         # 随机噪声作为对抗样本
@@ -67,25 +77,21 @@ class Gan:
         self.d_input = tf.placeholder(tf.float32, [None, d_n_input], name='d_input')
 
         with tf.variable_scope('generator'):
-            g_n_hidden1 = 1200
-            g_n_hidden2 = 1200
             g_n_output = self.img_size
-            self.g_weight_layer1 = self.init_variable([g_n_input, g_n_hidden1], name='layer1')
-            self.g_bias_layer1 = self.init_variable([g_n_hidden1], name='layer1')
-            self.g_weight_layer2 = self.init_variable([g_n_hidden1, g_n_hidden2], name='layer2')
-            self.g_bias_layer2 = self.init_variable([g_n_hidden2], name='layer2')
-            self.g_weight_layer3 = self.init_variable([g_n_hidden2, g_n_output], name='layer3')
+            self.g_weight_layer1 = self.init_variable([g_n_input, self.g_n_hidden1], name='layer1')
+            self.g_bias_layer1 = self.init_variable([self.g_n_hidden1], name='layer1')
+            self.g_weight_layer2 = self.init_variable([self.g_n_hidden1, self.g_n_hidden2], name='layer2')
+            self.g_bias_layer2 = self.init_variable([self.g_n_hidden2], name='layer2')
+            self.g_weight_layer3 = self.init_variable([self.g_n_hidden2, g_n_output], name='layer3')
             self.g_bias_layer3 = self.init_variable([g_n_output], name='layer3')
 
         with tf.variable_scope('discriminator'):
-            d_n_hidden1 = 240
-            d_n_hidden2 = 240
             d_n_output = 1
-            self.d_weight_layer1 = self.init_variable([d_n_input, d_n_hidden1], name='layer1')
-            self.d_bias_layer1 = self.init_variable([d_n_hidden1], name='layer1')
-            self.d_weight_layer2 = self.init_variable([d_n_hidden1, d_n_hidden2], name='layer2')
-            self.d_bias_layer2 = self.init_variable([d_n_hidden2], name='layer2')
-            self.d_weight_layer3 = self.init_variable([d_n_hidden2, d_n_output], name='layer3')
+            self.d_weight_layer1 = self.init_variable([d_n_input, self.d_n_hidden1], name='layer1')
+            self.d_bias_layer1 = self.init_variable([self.d_n_hidden1], name='layer1')
+            self.d_weight_layer2 = self.init_variable([self.d_n_hidden1, self.d_n_hidden2], name='layer2')
+            self.d_bias_layer2 = self.init_variable([self.d_n_hidden2], name='layer2')
+            self.d_weight_layer3 = self.init_variable([self.d_n_hidden2, d_n_output], name='layer3')
             self.d_bias_layer3 = self.init_variable([d_n_output], name='layer3')
 
     def generator(self, input):
@@ -115,21 +121,11 @@ class Gan:
 
     def g_loss(self):
         return -tf.reduce_mean(tf.log(self.d_output_gene))
-        # return -tf.reduce_mean(self.d_output_gene)
 
     def d_loss(self):
         return -tf.reduce_mean(tf.log(self.d_output_real) + tf.log(1-self.d_output_gene))
-        # return tf.reduce_mean(self.d_output_gene - self.d_output_real)
 
-    def train(self, is_load=False, n_epoch=None):
-        self.train_mnist(is_load=is_load, n_epoch=n_epoch)
-
-    def train_mnist(self, is_load=False, n_epoch=None):
-        if n_epoch is not None:
-            self.n_epoch = n_epoch
-
-        true_data = input_data.read_data_sets('MNIST/')
-
+    def train(self, is_load=False):
         g_loss = self.g_loss()
         d_loss = self.d_loss()
 
@@ -152,9 +148,18 @@ class Gan:
 
         d_l = 1
         g_l = 1
+        start_idx = 0
         for i in range(self.n_epoch):
             for j in range(self.n_train_discriminator):
-                true_batch = true_data.train.next_batch(self.batch_size)[0] # [0]:images, [1]:labels
+                if self.dataset == 'MNIST':
+                    true_batch = self.true_data.train.next_batch(self.batch_size)[0] # [0]:images, [1]:labels
+                elif self.dataset == 'CIFAR':
+                    if start_idx >= len(self.dataset):
+                        start_idx -= len(self.dataset)
+                    true_batch = self.true_data[start_idx:(start_idx+self.batch_size)]
+                else:
+                    true_batch = None
+
                 random_batch = self.get_random_input([self.batch_size, self.input_size])
                 feed_dict = {self.g_input: random_batch,
                              self.d_input: true_batch}
@@ -173,16 +178,16 @@ class Gan:
                 print("check point saving...")
 
             if i % 2000 == 0:
-                self.generate_some_image(i)
-                print("Iteration: %d, successfully saved samples" % i)
+                self.sample_images(i)
+                print("Iteration: %d, successfully saved samples_MNIST" % i)
 
-    def load_model(self, ckpt_dir='check_point'):
+    def load_model(self):
         saver = tf.train.Saver()
-        ckpt = tf.train.latest_checkpoint(ckpt_dir)
+        ckpt = tf.train.latest_checkpoint(self.ckpt_path)
         saver.restore(self.sess, ckpt)
 
-    def generate_some_image(self, cur_epoch, n_img=36):
+    def sample_images(self, cur_epoch):
         self.load_model()
         feed_dict = {self.g_input: self.test_random_input}
         generate_imgs = self.sess.run(self.g_output, feed_dict=feed_dict)
-        save_samples(generate_imgs, self.sample_dir, cur_epoch, n_img)
+        save_samples(self.dataset, generate_imgs, self.sample_dir, cur_epoch, self.n_img)

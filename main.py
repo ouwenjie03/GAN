@@ -10,6 +10,7 @@
 from model import *
 
 
-gan = Gan()
+# gan = Gan('MNIST')
+gan = Gan('CIFAR')
 
 gan.train()
