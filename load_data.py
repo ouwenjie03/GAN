@@ -24,8 +24,8 @@ def load_data(dataset='MNIST'):
         dirname = 'CIFAR/cifar-10-batches-py/'
         # print(unpickle(dirname+'test_batch'))
         data = unpickle(dirname+'test_batch')[b'data'] / 255.0
-        # for i in range(1, 6):
-        #     data = np.vstack((data, unpickle(dirname+'data_batch_'+str(i))[b'data'] / 255.0))
+        for i in range(1, 6):
+            data = np.vstack((data, unpickle(dirname+'data_batch_'+str(i))[b'data'] / 255.0))
         return data
 
 
