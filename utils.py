@@ -59,7 +59,7 @@ def save_samples_cifar(np_imgs, img_path, cur_epoch, n_img):
     H = W = int(HW ** 0.5)
     num = int(n_img ** 0.5)
     sep = 3
-    syn_img = np.ones((num * H + (num - 1) * sep, num * W + (num - 1) * sep), D) * 255
+    syn_img = np.ones((num * H + (num - 1) * sep, num * W + (num - 1) * sep, D)) * 255
     syn_img = syn_img.astype(np.uint8)
     for i in range(num):
         for j in range(num):
