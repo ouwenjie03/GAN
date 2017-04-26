@@ -161,6 +161,7 @@ class Gan:
                     if start_idx >= len(self.dataset):
                         start_idx -= len(self.dataset)
                     true_batch = self.true_data[start_idx:(start_idx+self.batch_size)]
+                    start_idx += self.batch_size
                 else:
                     true_batch = None
 
