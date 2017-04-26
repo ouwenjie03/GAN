@@ -59,12 +59,12 @@ def save_samples_cifar(np_imgs, img_path, cur_epoch, n_img):
     H = W = int(HW ** 0.5)
     num = int(n_img ** 0.5)
     sep = 3
-    syn_img = np.ones((D, num * H + (num - 1) * sep, num * W + (num - 1) * sep)) * 255
+    syn_img = np.ones((num * H + (num - 1) * sep, num * W + (num - 1) * sep, D)) * 255
     syn_img = syn_img.astype(np.uint8)
     for i in range(num):
         for j in range(num):
-            syn_img[0:D, i*(H+sep):(i+1)*H+i*sep, j*(W+sep):(j+1)*W+j*sep] = \
-                    np.rollaxis(np_imgs[i*num + j].reshape((H, W, D)), 2)
+            syn_img[i*(H+sep):(i+1)*H+i*sep, j*(W+sep):(j+1)*W+j*sep, 0:D] = \
+                    np_imgs[i*num + j].reshape((D, H, W)).transpose((1, 2, 0))
 
     im = Image.fromarray(syn_img)
     im.save(join(img_path, "sample_img_%d.jpg" % cur_epoch))
