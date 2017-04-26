@@ -9,12 +9,22 @@
 
 from tensorflow.examples.tutorials.mnist import input_data
 import numpy as np
+import sys
+
 
 def unpickle(file):
-    import cPickle
-    with open(file, 'rb') as fo:
-        dict = cPickle.load(fo) # encoding='bytes')
-    return dict
+    # PYTHON 3
+    if sys.version_info.major == 3:
+        import pickle
+        with open(file, 'rb') as fo:
+            dict = pickle.load(fo, encoding='bytes')
+        return dict
+    # PYTHON 2
+    else:
+        import cPickle
+        with open(file, 'rb') as fo:
+            dict = cPickle.load(fo)
+        return dict
 
 
 def load_data(dataset='MNIST'):
