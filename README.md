@@ -23,4 +23,4 @@ Iteration 18000
 ## To do
 
 - [x] MNIST dataset experiment    
-- [ ] TFD dataset experiment
+- [ ] cifar-10 dataset experiment

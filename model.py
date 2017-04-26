@@ -26,10 +26,10 @@ class Gan:
         self.true_data = load_data(self.dataset)
 
         # setup sample and check point path
-        self.sample_dir = 'samples_'+dataset
+        self.sample_dir = os.path.join('samples', dataset)
         if not os.path.exists(self.sample_dir):
             os.makedirs(self.sample_dir)
-        self.ckpt_path = 'check_point_'+dataset
+        self.ckpt_path = os.path.join('check_point', dataset)
         if not os.path.exists(self.ckpt_path):
             os.makedirs(self.ckpt_path)
 
@@ -45,7 +45,7 @@ class Gan:
         self.learning_rate = config.learning_rate
         self.momentum = config.momentum
         self.batch_size = config.batch_size
-        self.n_epoch = config.batch_size
+        self.n_epoch = config.n_epoch
         self.n_train_discriminator = config.n_train_discriminator
         self.n_train_generator = config.n_train_generator
 
@@ -172,7 +172,7 @@ class Gan:
 
             if i % 10 == 0:
                 print("%d | g_loss: %f | d_loss: %f" % (i, g_l, d_l))
-            if i % 100 == 0:
+            if i % 2000 == 0:
                 saver.save(self.sess, os.path.join(self.ckpt_path, 'gan.ckpt'), \
                            global_step=int(i/200))
                 print("check point saving...")
