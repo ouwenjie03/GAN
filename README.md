@@ -9,16 +9,24 @@ This repo attempts to reporduce the amazing work GANs([Goodfellow I J, Pougetaba
 
 setup TensorFlow 1.0 environment, and run the following command.
 
+### MNIST
+
 ```sh
-python main.py
+python main.py --dataset=MNIST [--use_gpu=1]
+```
+
+### CIFAR
+
+```sh
+python main.py --dataset=CIFAR
 ```
 
 ## Results
 
 ### MNIST
 
-![MNIST](imgs/MNIST_18000.jpg)<br>
-Iteration 18000
+![MNIST](imgs/MNIST_10000.gif)<br>
+Iteration 0 to 10000
 
 ## To do
 

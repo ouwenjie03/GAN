@@ -17,7 +17,7 @@ conf = None
 
 
 def main(_):
-    gan = Gan(conf.dataset)
+    gan = Gan(conf)
     gan.train()
 
 
@@ -26,6 +26,9 @@ if __name__ == "__main__":
     parser.add_argument("--dataset", type=str, choices=["MNIST", "CIFAR"], \
                         default="MNIST", \
                         help="input dataset name")
+    parser.add_argument("--use_gpu", type=int, choices=[0, 1], \
+                        default=0, \
+                        help="whether to use gpu or not")
     conf, unparsed = parser.parse_known_args()
 
     tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)

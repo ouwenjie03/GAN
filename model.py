@@ -12,34 +12,38 @@ import numpy as np
 from PIL import Image
 import os
 from utils import *
-from my_config import *
+from params_config import *
 from load_data import *
 
 class Gan:
-    def __init__(self, dataset='MNIST'):
-        self.dataset = dataset
+    def __init__(self, conf):
+        self.dataset = conf.dataset
 
         # load model's configure
-        self.load_config(get_config(dataset))
+        self.load_config(get_config(self.dataset))
 
         # load data
         self.true_data = load_data(self.dataset)
 
         # setup sample and check point path
-        self.sample_dir = os.path.join('samples', dataset)
+        self.sample_dir = os.path.join('samples', self.dataset)
         if not os.path.exists(self.sample_dir):
             os.makedirs(self.sample_dir)
-        self.ckpt_path = os.path.join('check_point', dataset)
+        self.ckpt_path = os.path.join('check_point', self.dataset)
         if not os.path.exists(self.ckpt_path):
             os.makedirs(self.ckpt_path)
-
-        self.init_param()
-        self.build_gan()
 
         self.n_img = 36
         self.test_random_input = self.get_random_input([self.n_img, self.input_size])
 
-        self.sess = tf.Session()
+        device_str = "/gpu:0" if conf.use_gpu else "/cpu:0"
+        with tf.device(device_str):
+            self.init_param()
+            self.build_gan()
+            # setup gpu usage if needed
+            config = tf.ConfigProto(allow_soft_placement=True)
+            config.gpu_options.per_process_gpu_memory_fraction = 0.6
+            self.sess = tf.Session(config=config) if conf.use_gpu else tf.Session()
 
     def load_config(self, config):
         self.learning_rate = config.learning_rate
@@ -172,14 +176,14 @@ class Gan:
 
             if i % 10 == 0:
                 print("%d | g_loss: %f | d_loss: %f" % (i, g_l, d_l))
-            if i % 2000 == 0:
+            if i % 1000 == 0:
                 saver.save(self.sess, os.path.join(self.ckpt_path, 'gan.ckpt'), \
                            global_step=int(i/200))
                 print("check point saving...")
 
-            if i % 2000 == 0:
+            if i % 1000 == 0:
                 self.sample_images(i)
-                print("Iteration: %d, successfully saved samples_MNIST" % i)
+                print("Iteration: %d, successfully saved %s samples" % (i, self.dataset))
 
     def load_model(self):
         saver = tf.train.Saver()
