@@ -3,7 +3,7 @@
 """
 @author: ouwj
 @position: ouwj-win10
-@file: my_config.py
+@file: params_config.py
 @time: 2017/4/25 14:12
 """
 
@@ -42,7 +42,7 @@ class CIFAR_Config:
     learning_rate = 0.025
     momentum = 0.5
     batch_size = 100
-    n_epoch = 40000
+    n_epoch = 40001
     n_train_discriminator = 1
     n_train_generator = 1
 
