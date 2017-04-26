@@ -1,5 +1,5 @@
 MNIST
 CIFAR
 samples*
-check_point
+check_point*
 *.pyc
