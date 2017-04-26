@@ -71,7 +71,7 @@ class Gan:
         return np.random.uniform(low=-1, high=1, size=size)
 
     def init_variable(self, shape, name=None):
-        return tf.Variable(tf.random_uniform(shape, minval=-0.1, maxval=0.1), name=name)
+        return tf.Variable(tf.random_uniform(shape, minval=-0.01, maxval=0.01), name=name)
 
     def init_param(self):
         g_n_input = self.input_size
@@ -82,21 +82,21 @@ class Gan:
 
         with tf.variable_scope('generator'):
             g_n_output = self.img_size
-            self.g_weight_layer1 = self.init_variable([g_n_input, self.g_n_hidden1], name='layer1')
-            self.g_bias_layer1 = self.init_variable([self.g_n_hidden1], name='layer1')
-            self.g_weight_layer2 = self.init_variable([self.g_n_hidden1, self.g_n_hidden2], name='layer2')
-            self.g_bias_layer2 = self.init_variable([self.g_n_hidden2], name='layer2')
-            self.g_weight_layer3 = self.init_variable([self.g_n_hidden2, g_n_output], name='layer3')
-            self.g_bias_layer3 = self.init_variable([g_n_output], name='layer3')
+            self.g_weight_layer1 = self.init_variable([g_n_input, self.g_n_hidden1], name='layer1_w')
+            self.g_bias_layer1 = self.init_variable([self.g_n_hidden1], name='layer1_b')
+            self.g_weight_layer2 = self.init_variable([self.g_n_hidden1, self.g_n_hidden2], name='layer2_w')
+            self.g_bias_layer2 = self.init_variable([self.g_n_hidden2], name='layer2_b')
+            self.g_weight_layer3 = self.init_variable([self.g_n_hidden2, g_n_output], name='layer3_w')
+            self.g_bias_layer3 = self.init_variable([g_n_output], name='layer3_b')
 
         with tf.variable_scope('discriminator'):
             d_n_output = 1
-            self.d_weight_layer1 = self.init_variable([d_n_input, self.d_n_hidden1], name='layer1')
-            self.d_bias_layer1 = self.init_variable([self.d_n_hidden1], name='layer1')
-            self.d_weight_layer2 = self.init_variable([self.d_n_hidden1, self.d_n_hidden2], name='layer2')
-            self.d_bias_layer2 = self.init_variable([self.d_n_hidden2], name='layer2')
-            self.d_weight_layer3 = self.init_variable([self.d_n_hidden2, d_n_output], name='layer3')
-            self.d_bias_layer3 = self.init_variable([d_n_output], name='layer3')
+            self.d_weight_layer1 = self.init_variable([d_n_input, self.d_n_hidden1], name='layer1_w')
+            self.d_bias_layer1 = self.init_variable([self.d_n_hidden1], name='layer1_b')
+            self.d_weight_layer2 = self.init_variable([self.d_n_hidden1, self.d_n_hidden2], name='layer2_w')
+            self.d_bias_layer2 = self.init_variable([self.d_n_hidden2], name='layer2_b')
+            self.d_weight_layer3 = self.init_variable([self.d_n_hidden2, d_n_output], name='layer3_w')
+            self.d_bias_layer3 = self.init_variable([d_n_output], name='layer3_b')
 
     def generator(self, input):
         with tf.variable_scope('generator'):
