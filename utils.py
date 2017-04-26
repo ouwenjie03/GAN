@@ -11,6 +11,7 @@ from PIL import Image
 from os.path import join
 import numpy as np
 
+
 def save_samples(dataset, np_imgs, img_path, cur_epoch, n_img):
     if dataset == 'MNIST':
         save_samples_mnist(np_imgs, img_path, cur_epoch, n_img)
@@ -61,6 +62,9 @@ def save_samples_cifar(np_imgs, img_path, cur_epoch, n_img):
     sep = 3
     syn_img = np.ones((num * H + (num - 1) * sep, num * W + (num - 1) * sep, D)) * 255
     syn_img = syn_img.astype(np.uint8)
+    # with open("image"+str(cur_epoch)+".npy", "wb") as f:
+    #     np.save(f, np_imgs[1])
+
     for i in range(num):
         for j in range(num):
             syn_img[i*(H+sep):(i+1)*H+i*sep, j*(W+sep):(j+1)*W+j*sep, 0:D] = \

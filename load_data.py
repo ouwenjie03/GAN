@@ -11,9 +11,9 @@ from tensorflow.examples.tutorials.mnist import input_data
 import numpy as np
 
 def unpickle(file):
-    import pickle
+    import cPickle
     with open(file, 'rb') as fo:
-        dict = pickle.load(fo) # encoding='bytes')
+        dict = cPickle.load(fo) # encoding='bytes')
     return dict
 
 
