@@ -158,7 +158,7 @@ class Gan:
                 if self.dataset == 'MNIST':
                     true_batch = self.true_data.train.next_batch(self.batch_size)[0] # [0]:images, [1]:labels
                 elif self.dataset == 'CIFAR':
-                    if start_idx >= len(self.dataset):
+                    if start_idx >= len(self.true_data):
                         start_idx = 0
                     true_batch = self.true_data[start_idx:(start_idx+self.batch_size)]
                     start_idx += self.batch_size
