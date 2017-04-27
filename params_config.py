@@ -39,7 +39,7 @@ class MNIST_Config:
 
 class CIFAR_Config:
     # parameters of model
-    learning_rate = 0.025
+    learning_rate = 0.05
     momentum = 0.5
     batch_size = 100
     n_epoch = 40001
@@ -48,7 +48,7 @@ class CIFAR_Config:
 
     # parameters of input & output
     image_size = 32*32*3
-    input_size = 10*10
+    input_size = 12*12*3
 
     # hidden parameters of generator
     g_n_hidden1 = 8000
