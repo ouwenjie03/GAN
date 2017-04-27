@@ -70,7 +70,7 @@ class Gan:
     def get_random_input(self, size):
         return np.random.uniform(low=-1, high=1, size=size)
 
-    def init_variable(self, shape, minval=-0.01, maxval=0.01, name=None):
+    def init_variable(self, shape, minval=-0.1, maxval=0.1, name=None):
         return tf.Variable(tf.random_uniform(shape, minval=minval, maxval=maxval), name=name)
 
     def init_param(self):

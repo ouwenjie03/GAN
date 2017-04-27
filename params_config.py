@@ -21,7 +21,7 @@ class MNIST_Config:
     momentum = 0.5
     batch_size = 64
     n_epoch = 10001
-    n_train_discriminator = 2
+    n_train_discriminator = 1
     n_train_generator = 1
 
     # parameters of input & output
