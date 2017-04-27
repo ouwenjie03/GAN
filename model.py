@@ -70,8 +70,8 @@ class Gan:
     def get_random_input(self, size):
         return np.random.uniform(low=-1, high=1, size=size)
 
-    def init_variable(self, shape, name=None):
-        return tf.Variable(tf.random_uniform(shape, minval=-0.01, maxval=0.01), name=name)
+    def init_variable(self, shape, minval=-0.01, maxval=0.01, name=None):
+        return tf.Variable(tf.random_uniform(shape, minval=minval, maxval=maxval), name=name)
 
     def init_param(self):
         g_n_input = self.input_size
@@ -82,7 +82,7 @@ class Gan:
 
         with tf.variable_scope('generator'):
             g_n_output = self.img_size
-            self.g_weight_layer1 = self.init_variable([g_n_input, self.g_n_hidden1], name='layer1_w')
+            self.g_weight_layer1 = self.init_variable([g_n_input, self.g_n_hidden1], minval=0.05, maxval=0.05, name='layer1_w')
             self.g_bias_layer1 = self.init_variable([self.g_n_hidden1], name='layer1_b')
             self.g_weight_layer2 = self.init_variable([self.g_n_hidden1, self.g_n_hidden2], name='layer2_w')
             self.g_bias_layer2 = self.init_variable([self.g_n_hidden2], name='layer2_b')
