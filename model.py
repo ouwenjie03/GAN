@@ -101,9 +101,9 @@ class Gan:
     def generator(self, input):
         with tf.variable_scope('generator'):
             g_hidden1 = tf.add(tf.matmul(input, self.g_weight_layer1), self.g_bias_layer1)
-            g_hidden1 = tf.nn.relu(g_hidden1)
+            g_hidden1 = tf.nn.tanh(g_hidden1)
             g_hidden2 = tf.add(tf.matmul(g_hidden1, self.g_weight_layer2), self.g_bias_layer2)
-            g_hidden2 = tf.nn.relu(g_hidden2)
+            g_hidden2 = tf.nn.tanh(g_hidden2)
             g_output = tf.add(tf.matmul(g_hidden2, self.g_weight_layer3), self.g_bias_layer3)
             g_output = tf.nn.sigmoid(g_output)
             return g_output
@@ -111,9 +111,9 @@ class Gan:
     def discriminator(self, input):
         with tf.variable_scope('discriminator'):
             d_hidden1 = tf.add(tf.matmul(input, self.d_weight_layer1), self.d_bias_layer1)
-            d_hidden1 = tf.nn.dropout(tf.nn.relu(d_hidden1), 0.5)
+            d_hidden1 = tf.nn.dropout(tf.nn.tanh(d_hidden1), 0.5)
             d_hidden2 = tf.add(tf.matmul(d_hidden1, self.d_weight_layer2), self.d_bias_layer2)
-            d_hidden2 = tf.nn.dropout(tf.nn.relu(d_hidden2), 0.5)
+            d_hidden2 = tf.nn.dropout(tf.nn.tanh(d_hidden2), 0.5)
             d_output = tf.add(tf.matmul(d_hidden2, self.d_weight_layer3), self.d_bias_layer3)
             d_output = tf.nn.sigmoid(d_output)
             return d_output
@@ -174,6 +174,8 @@ class Gan:
                 random_batch = self.get_random_input([self.batch_size, self.input_size])
                 feed_dict = {self.g_input: random_batch}
                 _, g_l = self.sess.run([g_op, g_loss], feed_dict)
+                # _, g_l, g_img = self.sess.run([g_op, g_loss, self.g_output], feed_dict)
+                # save_samples(self.dataset, g_img[0:36], 'samples', i, 36)
 
             if i % 10 == 0:
                 print("%d | g_loss: %f | d_loss: %f" % (i, g_l, d_l))
@@ -192,7 +194,7 @@ class Gan:
         saver.restore(self.sess, ckpt)
 
     def sample_images(self, cur_epoch):
-        self.load_model()
+        # self.load_model()
         feed_dict = {self.g_input: self.test_random_input}
         generate_imgs = self.sess.run(self.g_output, feed_dict=feed_dict)
         save_samples(self.dataset, generate_imgs, self.sample_dir, cur_epoch, self.n_img)
