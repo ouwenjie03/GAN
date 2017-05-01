@@ -7,10 +7,6 @@
 @time: 2017/4/26 14:33
 """
 
-<<<<<<< HEAD
-=======
-from tensorflow.examples.tutorials.mnist import input_data
->>>>>>> f3958384e75f74d664c5c902ce2031437ac86e5e
 import numpy as np
 import sys
 
@@ -32,22 +28,11 @@ def unpickle(file):
 
 def load_data(dataset='MNIST'):
     if dataset == 'MNIST':
-<<<<<<< HEAD
         from tensorflow.examples.tutorials.mnist import input_data
-=======
->>>>>>> f3958384e75f74d664c5c902ce2031437ac86e5e
         return input_data.read_data_sets('MNIST/')
     elif dataset == 'CIFAR':
         dirname = 'CIFAR/cifar-10-batches-py/'
         # print(unpickle(dirname+'test_batch'))
-<<<<<<< HEAD
-        data = unpickle(dirname+'test_batch')[b'data'] / 255.0
-        print(data.shape)
-        for i in range(1, 6):
-            data = np.vstack((data, unpickle(dirname+'data_batch_'+str(i))[b'data'] / 255.0))
-            print(data.shape)
-        return data
-=======
         dict = unpickle(dirname+'test_batch')
 
         # load all data
@@ -58,21 +43,20 @@ def load_data(dataset='MNIST'):
         # return data
 
         # load one class data
-        labels = dict[b'label']
+        labels = dict[b'labels']
         data = []
         for i in range(len(labels)):
             if labels[i] == 1:
                 data.append(dict[b'data'] / 255.0)
         for i in range(1, 6):
             dict = unpickle(dirname+'data_batch_'+str(i))
-            labels = dict[b'label']
+            labels = dict[b'labels']
             for j in range(len(labels)):
                 if labels[i] == 1:
                     data.append(dict[b'data'] / 255.0)
             # data = np.vstack((data, dict[b'data'] / 255.0))
         # return data
         return np.array(data)
->>>>>>> f3958384e75f74d664c5c902ce2031437ac86e5e
 
 
 if __name__ == '__main__':
