@@ -3,3 +3,4 @@ CIFAR
 samples*
 check_point*
 *.pyc
+.idea
