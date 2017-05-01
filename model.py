@@ -130,6 +130,8 @@ class Gan:
         return -tf.reduce_mean(tf.log(self.d_output_real) + tf.log(1-self.d_output_gene))
 
     def train(self, is_load=False):
+        # is_load = True
+        
         g_loss = self.g_loss()
         d_loss = self.d_loss()
 

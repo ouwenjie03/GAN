@@ -7,7 +7,6 @@
 @time: 2017/4/26 14:33
 """
 
-from tensorflow.examples.tutorials.mnist import input_data
 import numpy as np
 import sys
 
@@ -29,6 +28,7 @@ def unpickle(file):
 
 def load_data(dataset='MNIST'):
     if dataset == 'MNIST':
+        from tensorflow.examples.tutorials.mnist import input_data
         return input_data.read_data_sets('MNIST/')
     elif dataset == 'CIFAR':
         dirname = 'CIFAR/cifar-10-batches-py/'
