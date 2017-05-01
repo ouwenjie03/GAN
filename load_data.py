@@ -33,12 +33,30 @@ def load_data(dataset='MNIST'):
     elif dataset == 'CIFAR':
         dirname = 'CIFAR/cifar-10-batches-py/'
         # print(unpickle(dirname+'test_batch'))
-        data = unpickle(dirname+'test_batch')[b'data'] / 255.0
-        print(data.shape)
+        dict = unpickle(dirname+'test_batch')
+
+        # load all data
+        # data = dict[b'data'] / 255.0
+        # for i in range(1, 6):
+        #     dict = unpickle(dirname + 'data_batch_' + str(i))
+        #     data = np.vstack((data, dict[b'data'] / 255.0))
+        # return data
+
+        # load one class data
+        labels = dict[b'label']
+        data = []
+        for i in range(len(labels)):
+            if labels[i] == 1:
+                data.append(dict[b'data'] / 255.0)
         for i in range(1, 6):
-            data = np.vstack((data, unpickle(dirname+'data_batch_'+str(i))[b'data'] / 255.0))
-            print(data.shape)
-        return data
+            dict = unpickle(dirname+'data_batch_'+str(i))
+            labels = dict[b'label']
+            for j in range(len(labels)):
+                if labels[i] == 1:
+                    data.append(dict[b'data'] / 255.0)
+            # data = np.vstack((data, dict[b'data'] / 255.0))
+        # return data
+        return np.array(data)
 
 
 if __name__ == '__main__':
