@@ -1,5 +1,4 @@
-MNIST
-CIFAR
+data
 samples*
 check_point*
 *.pyc

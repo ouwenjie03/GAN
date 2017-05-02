@@ -23,7 +23,7 @@ def main(_):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", type=str, choices=["MNIST", "CIFAR"], \
+    parser.add_argument("--dataset", type=str, choices=["MNIST", "CIFAR", "CELEBA"], \
                         default="MNIST", \
                         help="input dataset name")
     parser.add_argument("--use_gpu", type=int, choices=[0, 1], \
