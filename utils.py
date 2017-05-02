@@ -13,12 +13,12 @@ import numpy as np
 
 
 def save_samples(dataset, np_imgs, img_path, cur_epoch, n_img):
-    if dataset == 'MNIST':
-        save_samples_mnist(np_imgs, img_path, cur_epoch, n_img)
+    if dataset == 'MNIST' or dataset == 'CELEBA':
+        save_samples_gray(np_imgs, img_path, cur_epoch, n_img)
     elif dataset == 'CIFAR':
-        save_samples_cifar(np_imgs, img_path, cur_epoch, n_img)
+        save_samples_rgb(np_imgs, img_path, cur_epoch, n_img)
 
-def save_samples_mnist(np_imgs, img_path, cur_epoch, n_img):
+def save_samples_gray(np_imgs, img_path, cur_epoch, n_img):
     """
     synthesize images and save it to img_path
     Args:
@@ -44,7 +44,7 @@ def save_samples_mnist(np_imgs, img_path, cur_epoch, n_img):
 
 
 
-def save_samples_cifar(np_imgs, img_path, cur_epoch, n_img):
+def save_samples_rgb(np_imgs, img_path, cur_epoch, n_img):
     """
     synthesize images and save it to img_path
     Args:

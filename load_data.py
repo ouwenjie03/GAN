@@ -28,9 +28,9 @@ def unpickle(file):
 
 
 def load_data(dataset='MNIST'):
-    if dataset == 'data/MNIST':
+    if dataset == 'MNIST':
         from tensorflow.examples.tutorials.mnist import input_data
-        return input_data.read_data_sets('MNIST/')
+        return input_data.read_data_sets('data/MNIST/')
     elif dataset == 'CIFAR':
         dirname = 'data/CIFAR/cifar-10-batches-py/'
         # print(unpickle(dirname+'test_batch'))
@@ -54,9 +54,10 @@ def load_data(dataset='MNIST'):
     elif dataset == 'CELEBA':
         filename = 'data/CELEBA/data_0'
         data = unpickle(filename) / 255.0
-        for i in range(1, 6):
+        for i in range(1, 3):
             filename = 'data/CELEBA/data_'+str(i)
             data = np.vstack((data, unpickle(filename) / 255.0))
+        print(len(data))
         return data
 
 def check_data(dataset):

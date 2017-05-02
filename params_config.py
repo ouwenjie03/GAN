@@ -68,7 +68,7 @@ class CELEBA_Config:
     learning_rate = 0.1
     momentum = 0.5
     batch_size = 64
-    n_epoch = 10001
+    n_epoch = 20001
     n_train_discriminator = 1
     n_train_generator = 1
 
