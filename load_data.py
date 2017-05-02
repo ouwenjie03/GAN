@@ -52,8 +52,11 @@ def load_data(dataset='MNIST'):
             data = np.vstack((data, dict[b'data'][labels==1] / 255.0))
         return data
     elif dataset == 'CELEBA':
-        dirname = 'data/CELEBA/data.pkl'
-        data = unpickle(dirname) / 255.0
+        filename = 'data/CELEBA/data_0'
+        data = unpickle(filename) / 255.0
+        for i in range(1, 6):
+            filename = 'data/CELEBA/data_'+str(i)
+            data = np.vstack((data, unpickle(filename) / 255.0))
         return data
 
 def check_data(dataset):
