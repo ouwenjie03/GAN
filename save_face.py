@@ -11,22 +11,31 @@ import pickle
 import os
 from PIL import Image
 import numpy as np
+import sys
 
 # face_dir = 'd:/img_align_celeba'
 face_dir = '/home/yuedong/Documents/img_align_celeba'
-pickle_file = 'data/CELEBA/data.pkl'
-
-faces = sorted(os.listdir(face_dir))
-
-all_data = []
-for f in faces:
-    print(f)
-    im = Image.open(os.path.join(face_dir, f))
-    im = im.resize((28, 28))
-    arr = np.array(im)
-    arr2 = arr[:,:,0]*0.299 + arr[:,:,1]*0.587 + arr[:,:,2]*0.114
-    all_data.append(arr2.reshape((-1)))
+pickle_file = 'data/CELEBA/data'
 
 
-with open(pickle_file, 'wb') as fo:
-    pickle.dump(np.array(all_data), fo, True)
+def main(part):
+    faces = sorted(os.listdir(face_dir))
+    start = len(part) / 6 * part
+    end = len(part) / 6 * (part+1)
+
+    all_data = []
+    for f in faces[start:end]:
+        print(f)
+        im = Image.open(os.path.join(face_dir, f))
+        im = im.resize((28, 28))
+        arr = np.array(im)
+        arr2 = arr[:, :, 0] * 0.299 + arr[:, :, 1] * 0.587 + arr[:, :, 2] * 0.114
+        all_data.append(arr2.reshape((-1)))
+
+    with open(pickle_file+'_'+str(part), 'wb') as fo:
+        pickle.dump(np.array(all_data), fo, True)
+
+
+if __name__ == "__main__":
+    part = int(sys.argv[1])
+    print(part)
