@@ -140,7 +140,7 @@ class Gan:
 
         t_vars = tf.trainable_variables()
         g_var_list = [var for var in t_vars if 'generator' in var.name]
-        g_op = optimizer_Adam.minimize(g_loss, var_list=g_var_list)
+        g_op = optimizer_SGD.minimize(g_loss, var_list=g_var_list)
 
         d_var_list = [var for var in t_vars if 'discriminator' in var.name]
         d_op = optimizer_SGD.minimize(d_loss, var_list=d_var_list)

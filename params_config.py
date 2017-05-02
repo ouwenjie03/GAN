@@ -39,11 +39,11 @@ class MNIST_Config:
 
 class CIFAR_Config:
     # parameters of model
-    learning_rate = 0.01
+    learning_rate = 0.025
     momentum = 0.5
     batch_size = 100
     n_epoch = 40001
-    n_train_discriminator = 2
+    n_train_discriminator = 1
     n_train_generator = 1
 
     # parameters of input & output
