@@ -38,4 +38,4 @@ def main(part):
 
 if __name__ == "__main__":
     part = int(sys.argv[1])
-    print(part)
+    main(part)
