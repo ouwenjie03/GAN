@@ -20,8 +20,8 @@ pickle_file = 'data/CELEBA/data'
 
 def main(part):
     faces = sorted(os.listdir(face_dir))
-    start = len(part) / 6 * part
-    end = len(part) / 6 * (part+1)
+    start = len(faces) / 6 * part
+    end = len(faces) / 6 * (part+1)
 
     all_data = []
     for f in faces[start:end]:
