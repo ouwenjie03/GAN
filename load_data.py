@@ -43,20 +43,13 @@ def load_data(dataset='MNIST'):
         # return data
 
         # load one class data
-        labels = dict[b'labels']
-        data = []
-        for i in range(len(labels)):
-            if labels[i] == 1:
-                data.append(dict[b'data'] / 255.0)
+        labels = np.array(dict[b'labels'])
+        data = dict[b'data'][labels==1] / 255.0
         for i in range(1, 6):
             dict = unpickle(dirname+'data_batch_'+str(i))
-            labels = dict[b'labels']
-            for j in range(len(labels)):
-                if labels[i] == 1:
-                    data.append(dict[b'data'] / 255.0)
-            # data = np.vstack((data, dict[b'data'] / 255.0))
-        # return data
-        return np.array(data)
+            labels = np.array(dict[b'labels'])
+            data = np.vstack((data, dict[b'data'][labels==1] / 255.0))
+        return data
 
 
 if __name__ == '__main__':

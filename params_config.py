@@ -43,15 +43,15 @@ class CIFAR_Config:
     momentum = 0.5
     batch_size = 100
     n_epoch = 40001
-    n_train_discriminator = 1
+    n_train_discriminator = 2
     n_train_generator = 1
 
     # parameters of input & output
     image_size = 32*32*3
-    input_size = 12*12*3
+    input_size = 10*10
 
     # hidden parameters of generator
-    g_n_hidden1 = 8000
+    g_n_hidden1 = 4000
     g_n_hidden2 = 8000
 
     # hidden parameters of discriminator

@@ -68,7 +68,7 @@ class Gan:
         return img
 
     def get_random_input(self, size):
-        return np.random.uniform(low=-1, high=1, size=size)
+        return np.random.normal(size=size)
 
     def init_variable(self, shape, minval=-0.1, maxval=0.1, name=None):
         return tf.Variable(tf.random_uniform(shape, minval=minval, maxval=maxval), name=name)
@@ -135,15 +135,15 @@ class Gan:
         g_loss = self.g_loss()
         d_loss = self.d_loss()
 
-        optimizer = tf.train.MomentumOptimizer(learning_rate=self.learning_rate, momentum=self.momentum)
-        # optimizer = tf.train.RMSPropOptimizer(learning_rate=self.learning_rate)
+        optimizer_SGD = tf.train.MomentumOptimizer(learning_rate=self.learning_rate, momentum=self.momentum)
+        optimizer_Adam = tf.train.AdamOptimizer(learning_rate=self.learning_rate)
 
         t_vars = tf.trainable_variables()
         g_var_list = [var for var in t_vars if 'generator' in var.name]
-        g_op = optimizer.minimize(g_loss, var_list=g_var_list)
+        g_op = optimizer_Adam.minimize(g_loss, var_list=g_var_list)
 
         d_var_list = [var for var in t_vars if 'discriminator' in var.name]
-        d_op = optimizer.minimize(d_loss, var_list=d_var_list)
+        d_op = optimizer_SGD.minimize(d_loss, var_list=d_var_list)
 
         saver = tf.train.Saver()
 
