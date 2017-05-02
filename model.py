@@ -159,7 +159,7 @@ class Gan:
             for j in range(self.n_train_discriminator):
                 if self.dataset == 'MNIST':
                     true_batch = self.true_data.train.next_batch(self.batch_size)[0] # [0]:images, [1]:labels
-                elif self.dataset == 'CIFAR':
+                elif self.dataset == 'CIFAR' or self.dataset == 'CELEBA':
                     if start_idx >= len(self.true_data):
                         start_idx = 0
                     true_batch = self.true_data[start_idx:(start_idx+self.batch_size)]
