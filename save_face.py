@@ -15,7 +15,7 @@ import sys
 
 # face_dir = 'd:/img_align_celeba'
 face_dir = '/home/yuedong/Documents/img_align_celeba'
-pickle_file = 'data/CELEBA/data_big'
+pickle_file = 'data/CELEBA/data_quantize'
 
 
 def main(part):
@@ -26,10 +26,11 @@ def main(part):
     all_data = []
     for f in faces[start:end]:
         print(f)
-        im = Image.open(os.path.join(face_dir, f))
+        im = Image.open(os.path.join(face_dir, f)).convert('L')
         im = im.resize((48, 48))
+        # quantization
+        im.quantize(colors=8).convert('L')
         arr = np.array(im)
-        arr2 = arr[:, :, 0] * 0.299 + arr[:, :, 1] * 0.587 + arr[:, :, 2] * 0.114
         all_data.append(arr2.reshape((-1)))
 
     with open(pickle_file+'_'+str(part), 'wb') as fo:
