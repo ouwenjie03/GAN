@@ -52,10 +52,10 @@ def load_data(dataset='MNIST'):
             data = np.vstack((data, dict[b'data'][labels==1] / 255.0))
         return data
     elif dataset == 'CELEBA':
-        filename = 'data/CELEBA/data_0'
+        filename = 'data/CELEBA/data_big_0'
         data = unpickle(filename) / 255.0
         for i in range(1, 3):
-            filename = 'data/CELEBA/data_'+str(i)
+            filename = 'data/CELEBA/data_big_'+str(i)
             data = np.vstack((data, unpickle(filename) / 255.0))
         print(len(data))
         return data
