@@ -182,12 +182,12 @@ class Gan:
 
             if i % 10 == 0:
                 print("%d | g_loss: %f | d_loss: %f" % (i, g_l, d_l))
-            if i % 1000 == 0:
+            if i % 5000 == 0:
                 saver.save(self.sess, os.path.join(self.ckpt_path, 'gan.ckpt'), \
                            global_step=int(i/200))
                 print("check point saving...")
 
-            if i % 1000 == 0:
+            if i % 5000 == 0:
                 self.sample_images(i)
                 print("Iteration: %d, successfully saved %s samples" % (i, self.dataset))
 

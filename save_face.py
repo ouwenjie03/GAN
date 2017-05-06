@@ -24,14 +24,15 @@ def main(part):
     end = len(faces) / 6 * (part+1)
 
     all_data = []
-    for f in faces[start:end]:
-        print(f)
+    for idx, f in enumerate(faces[start:end]):
+        if idx % 100 == 0:
+            print(f)
         im = Image.open(os.path.join(face_dir, f)).convert('L')
         im = im.resize((48, 48))
         # quantization
         im.quantize(colors=8).convert('L')
         arr = np.array(im)
-        all_data.append(arr2.reshape((-1)))
+        all_data.append(arr.reshape((-1)))
 
     with open(pickle_file+'_'+str(part), 'wb') as fo:
         pickle.dump(np.array(all_data), fo, True)

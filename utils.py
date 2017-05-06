@@ -29,6 +29,12 @@ def save_samples_gray(np_imgs, img_path, cur_epoch, n_img):
     """
     np_imgs *= 255
     np_imgs = np_imgs.astype(np.uint8)
+    # quantize to 8 colors
+    level = 8
+    diff = 256 / level
+    scale = 255 / (level - 1)
+    np_imgs = scale * (np_imgs / diff)
+    # syn image
     H = W = int(np_imgs.shape[1] ** 0.5)
     num = int(n_img ** 0.5)
     sep = 3
